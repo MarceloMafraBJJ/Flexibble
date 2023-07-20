@@ -30,7 +30,7 @@ export const dynamicParams = true;
 export const revalidate = 0;
 
 const Home = async ({ searchParams: { category, endcursor } }: Props) => {
-  const data = (await fetchAllProjects(category, endcursor)) as ProjectSearch;
+/*   const data = (await fetchAllProjects(category, endcursor)) as ProjectSearch;
 
   const projectsToDisplay = data?.projectSearch?.edges || [];
 
@@ -44,11 +44,13 @@ const Home = async ({ searchParams: { category, endcursor } }: Props) => {
         </p>
       </section>
     );
-  }
+  } */
 
   return (
     <section className="flexStart flex-col paddings mb-16">
-      <Categories />
+
+      <h1>Vai cu</h1>
+{/*       <Categories />
 
       <section className="projects-grid">
         {projectsToDisplay.map(({ node }: { node: ProjectInterface }) => (
@@ -69,7 +71,7 @@ const Home = async ({ searchParams: { category, endcursor } }: Props) => {
         endCursor={data?.projectSearch?.pageInfo?.endCursor}
         hasPreviousPage={data?.projectSearch?.pageInfo?.hasPreviousPage}
         hasNextPage={data?.projectSearch?.pageInfo.hasNextPage}
-      />
+      /> */}
     </section>
   );
 };
