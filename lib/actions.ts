@@ -106,11 +106,12 @@ export const fetchAllProjects = (
 ) => {
   client.setHeader("x-api-key", apiKey);
 
-  if (category === null || endcursor === null) {
-    return makeGraphQLRequest(projectsQuery);
-  }
-  
-  return makeGraphQLRequest(projectsQuery, { category, endcursor });
+  const variables = {
+    category: category !== null ? category : undefined, // Exclude the category variable if it's null.
+    endcursor: endcursor !== null ? endcursor : undefined,
+  };
+
+  return makeGraphQLRequest(projectsQuery, variables);
 };
 
 export const getProjectDetails = (id: string) => {
