@@ -111,11 +111,11 @@ export const fetchAllProjects = (
     endcursor,
   };
 
-  if (category === null) {
+  if (!category) {
     delete variables.category;
   }
 
-  if (endcursor === null) {
+  if (!endcursor) {
     delete variables.endcursor;
   }
 
