@@ -1,10 +1,19 @@
 import { ProjectInterface } from "@/common.types";
 import Categories from "@/components/Categories";
-import Loadmore from "@/components/Loadmore";
+import LoadMore from "@/components/Loadmore";
 import ProjectCard from "@/components/ProjectCard";
 import { fetchAllProjects } from "@/lib/actions";
 
-interface ProjectsSearchProps {
+type SearchParams = {
+  category?: string;
+  endcursor?: string;
+};
+
+type Props = {
+  searchParams: SearchParams;
+};
+
+type ProjectSearch = {
   projectSearch: {
     edges: { node: ProjectInterface }[];
     pageInfo: {
@@ -14,23 +23,14 @@ interface ProjectsSearchProps {
       endCursor: string;
     };
   };
-}
+};
 
-interface SearchParamsProps {
-  category?: string;
-  endCursor?: string;
-}
-interface HomeProps {
-  searchParams: SearchParamsProps;
-}
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
+export const revalidate = 0;
 
-export default async function Home({
-  searchParams: { category, endCursor },
-}: HomeProps) {
-  const data = (await fetchAllProjects(
-    category,
-    endCursor
-  )) as ProjectsSearchProps;
+const Home = async ({ searchParams: { category, endcursor } }: Props) => {
+  const data = (await fetchAllProjects(category, endcursor)) as ProjectSearch;
 
   const projectsToDisplay = data?.projectSearch?.edges || [];
 
@@ -38,20 +38,19 @@ export default async function Home({
     return (
       <section className="flexStart flex-col paddings">
         <Categories />
-        <p className="w-full text-center my-10 px-2">
+
+        <p className="no-result-text text-center">
           No projects found, go create some first.
         </p>
       </section>
     );
   }
 
-  const pagination = data.projectSearch.pageInfo;
-
   return (
-    <section className="flex-start paddings mb-16 flex-col">
+    <section className="flexStart flex-col paddings mb-16">
       <Categories />
 
-      <section className="grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-10 mt-10 w-full">
+      <section className="projects-grid">
         {projectsToDisplay.map(({ node }: { node: ProjectInterface }) => (
           <ProjectCard
             key={`${node?.id}`}
@@ -65,12 +64,14 @@ export default async function Home({
         ))}
       </section>
 
-      <Loadmore
-        startCursor={pagination.startCursor}
-        endCursor={pagination.endCursor}
-        hasPreviousPage={pagination.hasPreviousPage}
-        hasNextPage={pagination.hasNextPage}
+      <LoadMore
+        startCursor={data?.projectSearch?.pageInfo?.startCursor}
+        endCursor={data?.projectSearch?.pageInfo?.endCursor}
+        hasPreviousPage={data?.projectSearch?.pageInfo?.hasPreviousPage}
+        hasNextPage={data?.projectSearch?.pageInfo.hasNextPage}
       />
     </section>
   );
-}
+};
+
+export default Home;
