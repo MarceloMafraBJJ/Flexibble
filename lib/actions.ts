@@ -107,9 +107,17 @@ export const fetchAllProjects = (
   client.setHeader("x-api-key", apiKey);
 
   const variables = {
-    category: category !== null ? category : undefined, // Exclude the category variable if it's null.
-    endcursor: endcursor !== null ? endcursor : undefined,
+    category,
+    endcursor,
   };
+
+  if (category === null) {
+    delete variables.category;
+  }
+
+  if (endcursor === null) {
+    delete variables.endcursor;
+  }
 
   return makeGraphQLRequest(projectsQuery, variables);
 };
